@@ -2,7 +2,6 @@ package boolParser
 
 import (
   "io"
-  "fmt"
 )
 
 
@@ -14,7 +13,7 @@ const (
   tokIdent TokenType = iota
 
   // operations
-    // binayy
+    // binary
   tokUnion // +
   tokIntersection // *
   tokDifference // -
@@ -60,11 +59,11 @@ func isBinDigit(c byte) bool {
 }
 
 func isAlpha(c byte) bool {
-  return ('a'<= c && c =='z') || ('A' <= c && c <= 'Z')
+  return ('a'<= c && c <='z') || ('A' <= c && c <= 'Z')
 }
 
 func isAlphaDig(c byte) bool {
-  return ('0' <= c && c <= '9') || ('a'<= c && c =='z') || ('A' <= c && c <= 'Z')
+  return ('0' <= c && c <= '9') || ('a'<= c && c <='z') || ('A' <= c && c <= 'Z')
 }
 
 func readIdentifier(p []byte, n int, i int, r io.Reader) (string, int, error)  {
@@ -75,8 +74,8 @@ func readIdentifier(p []byte, n int, i int, r io.Reader) (string, int, error)  {
   for {
     for ; i < n; i++ {
       if (!isAlphaDig(p[i])) {
-        str += string(p[startIndex:i+1])
-        return str, i, nil
+        str += string(p[startIndex:i])
+        return str, i-1, nil
       }
     }
 
@@ -93,18 +92,19 @@ func readIdentifier(p []byte, n int, i int, r io.Reader) (string, int, error)  {
 }
 
 func Lexer(r io.Reader, out chan<- Token) {
+  var err error
   var p []byte = make([]byte, 256)
   offset := TokenOffset(0)
 
   for {
-    n, err := r.Read(p)
+    var n int
+    n, err = r.Read(p)
     if (err != nil) {
       break
     }
 
     for i := 0; i < n; i++ {
       char := p[i]
-      fmt.Println("i: %d, char: %s", i, char);
 
       switch {
       case char <= ' ':
@@ -128,12 +128,10 @@ func Lexer(r io.Reader, out chan<- Token) {
         break
       }
     }
-
-    if err == io.EOF {
-      out <- Token{_type:tokEOF, offset:offset}
-      return
-    }
-    out <- Token{_type:tokError, offset:offset, value:err.Error()}
+  }
+  if err == io.EOF {
+    out <- Token{_type:tokEOF, offset:offset}
     return
   }
+  out <- Token{_type:tokError, offset:offset, value:err.Error()}
 }
