@@ -34,6 +34,41 @@ const (
 	tokError
 )
 
+func (t TokenType) String() string {
+	switch t {
+	case tokUndefined:
+		return "Undefined"
+	case tokIdent:
+		return "Identifier"
+	case tokUnion:
+		return "Union"
+	case tokIntersection:
+		return "Intersection"
+	case tokDifference:
+		return "Difference"
+	case tokSymmDifference:
+		return "SymmDifference"
+	case tokNegation:
+		return "Negation"
+	case tokOpeningBraces:
+		return "OpeningBraces"
+	case tokOpeningParenthesis:
+		return "OpeningParenthesis"
+	case tokClosingBraces:
+		return "ClosingBraces"
+	case tokClosingParenthesis:
+		return "ClosingParenthesis"
+	case tokConst:
+		return "Const"
+	case tokEOF:
+		return "EOF"
+	case tokError:
+		return "Error"
+	default:
+		return "Unknown"
+	}
+}
+
 type Token struct {
 	_type  TokenType
 	offset TokenOffset

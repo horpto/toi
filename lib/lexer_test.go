@@ -4,6 +4,7 @@ import "testing"
 import "strings"
 
 func TestsIsbinDigit(t *testing.T) {
+	t.Parallel()
 	if !isBinDigit('0') {
 		t.Error("Expected true, but actual is false for '0'")
 	}
@@ -16,6 +17,7 @@ func TestsIsbinDigit(t *testing.T) {
 }
 
 func TestIsAlpha(t *testing.T) {
+	t.Parallel()
 	for i := byte('a'); i <= 'z'; i++ {
 		if !isAlpha(i) {
 			t.Error("Expected true, but actual is false for '", string(i), "'")
@@ -29,6 +31,7 @@ func TestIsAlpha(t *testing.T) {
 }
 
 func TestIsAlphaDig(t *testing.T) {
+	t.Parallel()
 	for i := byte('a'); i <= 'z'; i++ {
 		if !isAlphaDig(i) {
 			t.Error("Expected true, but actual is false for '", string(i), "'")
@@ -75,6 +78,21 @@ var testsLexer = map[string]([]Token){
 		Token{_type: tokConst, value: "1"},
 		Token{_type: tokEOF},
 	},
+	"a + c * d - !(q \\ 1) ": {
+		Token{_type: tokIdent, value: "a"},
+		Token{_type: tokUnion, value: "+"},
+		Token{_type: tokIdent, value: "c"},
+		Token{_type: tokIntersection, value: "*"},
+		Token{_type: tokIdent, value: "d"},
+		Token{_type: tokDifference, value: "-"},
+		Token{_type: tokNegation, value: "!"},
+		Token{_type: tokOpeningParenthesis, value: "("},
+		Token{_type: tokIdent, value: "q"},
+		Token{_type: tokSymmDifference, value: "\\"},
+		Token{_type: tokConst, value: "1"},
+		Token{_type: tokClosingParenthesis, value: ")"},
+		Token{_type: tokEOF},
+	},
 }
 
 func TestLexer(t *testing.T) {
@@ -88,7 +106,7 @@ func TestLexer(t *testing.T) {
 
 		for _, tok := range v {
 			rtok := <-ch
-			t.Log("get token:", rtok._type, rtok.value)
+			//t.Log("get token:", rtok._type, rtok.value)
 			if rtok._type != tok._type {
 				t.Error("Expected token type", tok._type, "actual:", rtok._type, "test:", k)
 				break
@@ -97,7 +115,7 @@ func TestLexer(t *testing.T) {
 				t.Error("Expected value", tok.value, "actual:", rtok.value, "test:", k)
 				break
 			}
-			// don't chekc offset
+			// don't check offset
 		}
 	}
 }
