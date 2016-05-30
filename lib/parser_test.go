@@ -64,8 +64,8 @@ func checkIdentifier(t *testing.T, node Node, value string) {
 	if !ok {
 		t.Errorf("expected value of Identifier type, actual: %T", node)
 	}
-	if ident.name != value {
-		t.Error("expected value:", value, ", actual:", ident.name)
+	if ident.Name != value {
+		t.Error("expected value:", value, ", actual:", ident.Name)
 	}
 }
 
@@ -79,8 +79,8 @@ func checkConst(t *testing.T, node Node, value string) {
 		t.Errorf("expected value of Const type, actual: %T", node)
 		return
 	}
-	if _const.value != value {
-		t.Error("expected value:", value, ", actual:", _const.value)
+	if _const.Value != value {
+		t.Error("expected value:", value, ", actual:", _const.Value)
 	}
 }
 
@@ -287,7 +287,7 @@ func TestParser(t *testing.T) {
 	r := strings.NewReader("a + c * d - !(q \\ 1) ")
 	go Lexer(r, ch)
 
-	ts := mkArrayTokenStream(ch)
+	ts := NewArrayTokenStream(ch)
 	ast, err := Parser(&ts)
 	if err != nil {
 		t.Error(err.Error())
@@ -300,5 +300,4 @@ func TestParser(t *testing.T) {
 		t.Errorf("expected Union, actual got: %T", ast)
 	}
 	checkIdentifier(t, node.LExpr, "a")
-
 }

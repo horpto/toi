@@ -2,6 +2,7 @@ package boolParser
 
 import (
 	"errors"
+	"strings"
 )
 
 func parseIdentifier(ts TokenStream) Node {
@@ -11,7 +12,7 @@ func parseIdentifier(ts TokenStream) Node {
 	}
 
 	ts.popToken()
-	return Identifier{name: token.value}
+	return Identifier{Name: token.value}
 }
 
 func parseConst(ts TokenStream) Node {
@@ -21,7 +22,7 @@ func parseConst(ts TokenStream) Node {
 	}
 
 	ts.popToken()
-	return Const{value: token.value}
+	return Const{Value: token.value}
 }
 
 func parseNegation(ts TokenStream) Node {
@@ -81,13 +82,10 @@ func parseIntersectionExpression(ts TokenStream) Node {
 	switch t_type {
 	case tokIntersection:
 		node = &IntersectionNode{}
-		node.SetLeftExpression(lExpr)
-	case tokEOF:
-		return lExpr
 	default:
 		return lExpr
 	}
-
+	node.SetLeftExpression(lExpr)
 	ts.popToken()
 	rExpr := parseIntersectionExpression(ts)
 	if rExpr == nil {
@@ -110,10 +108,6 @@ func parseStatement(ts TokenStream) Node {
 	switch t_type {
 	case tokUnion:
 		bn = &UnionNode{}
-	case tokDifference:
-		bn = &DifferenceNode{}
-	case tokSymmDifference:
-		bn = &SymDifferenceNode{}
 	default:
 		return lExpr
 	}
@@ -137,4 +131,13 @@ func Parser(ts TokenStream) (node Node, err error) {
 		err = errors.New("fail to parse")
 	}
 	return
+}
+
+func ParseString(str string) (node Node, err error) {
+	ch := make(chan Token)
+	r := strings.NewReader(str)
+	go Lexer(r, ch)
+
+	ts := NewArrayTokenStream(ch)
+	return Parser(&ts)
 }

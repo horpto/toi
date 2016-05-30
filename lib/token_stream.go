@@ -13,7 +13,7 @@ type ArrayTokenStream struct {
 	ch    <-chan Token
 }
 
-func mkArrayTokenStream(ch <-chan Token) ArrayTokenStream {
+func NewArrayTokenStream(ch <-chan Token) ArrayTokenStream {
 	top, ok := <-ch
 	if !ok {
 		top = Token{_type: tokEOF, offset: 0}
