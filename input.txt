@@ -1,0 +1,5 @@
+memory: z
+output: y
+input: x
+y: x + z
+z: !y
