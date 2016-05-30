@@ -25,7 +25,7 @@ type Identifier struct {
 func (id Identifier) Calculate(n Namespace) (bool, error) {
 	val, ok := n[id.Name]
 	if !ok {
-		return false, errors.New("Var " + id.Name + "not found")
+		return false, errors.New("Var '" + id.Name + "' not found")
 	}
 	return val, nil
 }

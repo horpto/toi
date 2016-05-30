@@ -76,5 +76,14 @@ func main() {
 	fileName := "./input.txt"
 
 	s, err := createSchemeFromFile(fileName)
-	fmt.Printf("%s", s, err)
+	if err != nil {
+		fmt.Errorf(err.Error())
+		return
+	}
+	tt, err := s.createTruthTable()
+	if err != nil {
+		fmt.Errorf(err.Error())
+		return
+	}
+	fmt.Print("\n", tt.String())
 }
