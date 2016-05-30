@@ -65,10 +65,29 @@ func (s Scheme) calculate(namespace boolParser.Namespace) (boolParser.Namespace,
 	return memory, nil
 }
 
+func (s Scheme) calculateOutputWord(signals []bool) ([]bool, error) {
+	out := make([]bool, len(signals))
+	namespace := make(map[string]bool, len(s.Memory))
+	for k, _ := range s.Memory {
+		namespace[k] = false
+	}
+	for i, signal := range signals {
+		namespace[s.In] = signal
+		delete(namespace, s.Out)
+
+		res, err := s.calculate(namespace)
+		if err != nil {
+			return nil, err
+		}
+		out[i] = res[s.Out]
+		namespace = res
+	}
+	return out, nil
+}
+
 func (s Scheme) createTruthTable() (*TruthTable, error) {
 	// Фиксируем порядок имен переменных,
 	// чтобы при итерации назначать новые значения
-
 	memory := []string{}
 	for k, _ := range s.Memory {
 		if k == s.In || k == s.Out {

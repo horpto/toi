@@ -86,4 +86,12 @@ func main() {
 		return
 	}
 	fmt.Print("\n", tt.String())
+	inputWord := []bool{false, true, false, false}
+	outputWord, err := s.calculateOutputWord(inputWord)
+	if err != nil {
+		fmt.Print(err.Error())
+		return
+	}
+	fmt.Println(inputWord)
+	fmt.Println(outputWord)
 }
