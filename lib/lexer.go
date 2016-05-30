@@ -104,6 +104,7 @@ func readIdentifier(p []byte, n int, i int, r io.Reader) (string, int, int, erro
 				return str, n, i - 1, nil
 			}
 		}
+		str += string(p[startIndex:n])
 		i = 0
 		startIndex = 0
 

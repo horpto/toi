@@ -93,6 +93,11 @@ var testsLexer = map[string]([]Token){
 		Token{_type: tokClosingParenthesis, value: ")"},
 		Token{_type: tokEOF},
 	},
+	"x + z": {
+		Token{_type: tokIdent, value: "x"},
+		Token{_type: tokUnion, value: "+"},
+		Token{_type: tokIdent, value: "z"},
+	},
 }
 
 func TestLexer(t *testing.T) {
