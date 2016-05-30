@@ -2,8 +2,9 @@ package main
 
 import (
 	"errors"
-	"strings"
 
+	//patched for AddHeaders
+	"github.com/horpto/termtables"
 	"github.com/horpto/toi/lib"
 )
 
@@ -33,8 +34,8 @@ func newScheme(in string, out string, mems map[string]string) (*Scheme, error) {
 		}
 		memory[k] = mnode
 	}
-	s := Scheme{In: in, Out: out, Memory: memory}
-	return &s, nil
+	s := &Scheme{In: in, Out: out, Memory: memory}
+	return s, nil
 }
 
 func (s Scheme) calculate(namespace boolParser.Namespace) (boolParser.Namespace, error) {
@@ -152,36 +153,27 @@ func boolToString(b bool) string {
 }
 
 func (tt *TruthTable) String() string {
-	header := "|"
-	paddings := make([]int, len(tt.inputs)+len(tt.outputs))
-	l := 0
-	for i, v := range tt.inputs {
-		l += len(v)
-		header += v + "|"
-		paddings[i] = len(v) - 1
-	}
-	header += "|"
-	for i, v := range tt.outputs {
-		l += len(v)
-		header += v + "|"
-		paddings[len(tt.inputs)+i] = len(v) - 1
-	}
-	header += "\n"
+	table := termtables.CreateTable()
+	table.SetModeTerminal()
 
-	// body
-	body := ""
+	for _, v := range tt.inputs {
+		table.AddHeaders(v)
+	}
+	for _, v := range tt.outputs {
+		table.AddHeaders(v)
+	}
+
+	// assume len(tt.inputs) == tt.vars[0] and len(tt.output) == len(tt.outputs)
+	// and actually len(tt.inputs) == len(tt.output)
 	for i, vars := range tt.vars {
-		line := "|"
-		for j, v := range vars {
-			line += strings.Repeat(" ", paddings[j]) + boolToString(v) + "|"
+		row := table.AddRow()
+		for _, v := range vars {
+			row.AddCell(boolToString(v))
 		}
-		line += "|"
-		for j, v := range tt.values[i] {
-			line += strings.Repeat(" ", paddings[len(vars)+j]) + boolToString(v) + "|"
+		for _, v := range tt.values[i] {
+			row.AddCell(boolToString(v))
 		}
-		line += "\n"
-		body += line
 	}
 
-	return header + body
+	return table.Render()
 }
