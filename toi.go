@@ -4,11 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	//"log"
 	"strings"
 )
-
-//const outputName := "output.txt"
 
 func parseHeader(line, sep string) (string, error) {
 	parts := strings.Split(line, sep)
@@ -76,11 +73,8 @@ func createSchemeFromFile(fileName string) (*Scheme, error) {
 }
 
 func main() {
-	//args := os.Args[1:]
-
 	fileName := "./input.txt"
+
 	s, err := createSchemeFromFile(fileName)
 	fmt.Printf("%s", s, err)
-	//vars : = make()
-	//var input string
 }

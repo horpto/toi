@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/horpto/toi/lib"
 )
@@ -62,4 +63,51 @@ func (s Scheme) calculate(namespace boolParser.Namespace) (bool, boolParser.Name
 	}
 	delete(namespace, s.Out)
 	return out, memory, nil
+}
+
+type TruthTable struct {
+	inputs  []string
+	outputs []string
+	vars    [][]bool
+	values  [][]bool
+}
+
+func boolToString(b bool) string {
+	if b {
+		return "1"
+	}
+	return "0"
+}
+
+func (tt *TruthTable) String() string {
+	header := "|"
+	paddings := make([]int, len(tt.inputs)+len(tt.outputs))
+	l := 0
+	for i, v := range tt.inputs {
+		l += len(v)
+		header += v + "|"
+		paddings[i] = len(v) - 1
+	}
+	for i, v := range tt.outputs {
+		l += len(v)
+		header += v + "|"
+		paddings[len(tt.inputs)+i] = len(v) - 1
+	}
+	header += "|\n"
+
+	// body
+	body := ""
+	for i, vars := range tt.vars {
+		line := "|"
+		for j, v := range vars {
+			line += strings.Repeat(" ", paddings[j]) + boolToString(v) + "|"
+		}
+		for j, v := range tt.values[i] {
+			line += strings.Repeat(" ", paddings[len(vars)+j]) + boolToString(v) + "|"
+		}
+		line += "|\n"
+		body += line
+	}
+
+	return header + body
 }
