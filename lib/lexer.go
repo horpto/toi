@@ -13,10 +13,8 @@ const (
 
 	// operations
 	// binary
-	tokUnion          // +
-	tokIntersection   // *
-	tokDifference     // -
-	tokSymmDifference // \
+	tokUnion        // +
+	tokIntersection // *
 
 	// unary
 	tokNegation // '!'
@@ -44,10 +42,6 @@ func (t TokenType) String() string {
 		return "Union"
 	case tokIntersection:
 		return "Intersection"
-	case tokDifference:
-		return "Difference"
-	case tokSymmDifference:
-		return "SymmDifference"
 	case tokNegation:
 		return "Negation"
 	case tokOpeningBraces:
@@ -77,15 +71,13 @@ type Token struct {
 
 // some reusable constant tokens
 var singleCharTokens map[byte]TokenType = map[byte]TokenType{
-	'+':  tokUnion,
-	'*':  tokIntersection,
-	'-':  tokDifference,
-	'\\': tokSymmDifference,
-	'!':  tokNegation,
-	'(':  tokOpeningParenthesis,
-	')':  tokClosingParenthesis,
-	'[':  tokOpeningBraces,
-	']':  tokClosingBraces,
+	'+': tokUnion,
+	'*': tokIntersection,
+	'!': tokNegation,
+	'(': tokOpeningParenthesis,
+	')': tokClosingParenthesis,
+	'[': tokOpeningBraces,
+	']': tokClosingBraces,
 }
 
 func isBinDigit(c byte) bool {
