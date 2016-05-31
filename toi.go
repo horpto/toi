@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+
+	"github.com/dixonwille/wmenu"
 )
+
+const fileName = "./input.txt"
 
 func parseHeader(line, sep string) (string, error) {
 	parts := strings.Split(line, sep)
@@ -73,25 +77,49 @@ func createSchemeFromFile(fileName string) (*Scheme, error) {
 }
 
 func main() {
-	fileName := "./input.txt"
+	var s *Scheme = nil
 
-	s, err := createSchemeFromFile(fileName)
-	if err != nil {
-		fmt.Errorf(err.Error())
-		return
+	exited := false
+	for !exited {
+		menu := wmenu.NewMenu("Выберите что-нибудь:")
+		menu.Option("Выход", false, func() error {
+			exited = true
+			return nil
+		})
+		/*
+			menu.Option("Ввести новую схему", false, func() error {
+				return nil
+			})
+		*/
+		menu.Option("Ввести новую схему из файла", false, func() (err error) {
+			s, err = createSchemeFromFile(fileName)
+			return err
+		})
+		menu.Option("Вывести таблицу истинности", false, func() error {
+			if s == nil {
+				return errors.New("Введите сначала схему")
+			}
+			tt, err := s.createTruthTable()
+			if err != nil {
+				return err
+			}
+			fmt.Print(tt.String())
+			return nil
+		})
+		menu.Option("Найти выходное слово по входному", false, func() error {
+			if s == nil {
+				return errors.New("Введите сначала схему")
+			}
+			inputWord := []bool{false, true, false, false}
+			outputWord, err := s.calculateOutputWord(inputWord)
+			if err != nil {
+				return err
+			}
+			fmt.Println(inputWord)
+			fmt.Println(outputWord)
+			return nil
+		})
+		menu.Run()
 	}
-	tt, err := s.createTruthTable()
-	if err != nil {
-		fmt.Errorf(err.Error())
-		return
-	}
-	fmt.Print("\n", tt.String())
-	inputWord := []bool{false, true, false, false}
-	outputWord, err := s.calculateOutputWord(inputWord)
-	if err != nil {
-		fmt.Print(err.Error())
-		return
-	}
-	fmt.Println(inputWord)
-	fmt.Println(outputWord)
+
 }
