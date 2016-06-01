@@ -5,6 +5,7 @@ import "errors"
 type Namespace map[string]bool
 
 type Node interface {
+	String() string
 	Calculate(Namespace) (bool, error)
 }
 
@@ -30,12 +31,20 @@ func (id Identifier) Calculate(n Namespace) (bool, error) {
 	return val, nil
 }
 
+func (id Identifier) String() string {
+	return id.Name
+}
+
 type Const struct {
 	Value string
 }
 
 func (c Const) Calculate(n Namespace) (bool, error) {
 	return c.Value == "1", nil
+}
+
+func (c Const) String() string {
+	return c.Value
 }
 
 type NegationNode struct {
@@ -48,6 +57,10 @@ func (nn NegationNode) Calculate(ns Namespace) (bool, error) {
 		return false, err
 	}
 	return !val, nil
+}
+
+func (nn NegationNode) String() string {
+	return "!" + nn.expr.String()
 }
 
 type BinaryNodeStruct struct {
@@ -87,6 +100,10 @@ func (un UnionNode) Calculate(ns Namespace) (bool, error) {
 	return (lexpr || rexpr), nil
 }
 
+func (un UnionNode) String() string {
+	return "(" + un.LExpr.String() + " + " + un.RExpr.String() + ")"
+}
+
 type IntersectionNode struct {
 	BinaryNodeStruct
 }
@@ -101,4 +118,8 @@ func (in IntersectionNode) Calculate(ns Namespace) (bool, error) {
 		return rexpr, err
 	}
 	return (lexpr && rexpr), nil
+}
+
+func (in IntersectionNode) String() string {
+	return "(" + in.LExpr.String() + " * " + in.RExpr.String() + ")"
 }

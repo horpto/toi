@@ -38,6 +38,23 @@ func newScheme(in string, out string, mems map[string]string) (*Scheme, error) {
 	return s, nil
 }
 
+func (s *Scheme) String() (buffer string) {
+	buffer += "input: " + s.In + "\n"
+	buffer += "output: " + s.Out + "\n"
+
+	memories := ""
+	vars := ""
+	for v, node := range s.Memory {
+		memories += v + ","
+		vars += v + ": " + node.String() + "\n"
+	}
+	if memories != "" {
+		buffer += "memory: " + memories + "\n"
+		buffer += vars
+	}
+	return buffer
+}
+
 func (s Scheme) calculate(namespace boolParser.Namespace) (boolParser.Namespace, error) {
 	if _, ok := namespace[s.Out]; ok {
 		return nil, errors.New("namespace contains output var: " + s.Out)
