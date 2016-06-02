@@ -3,8 +3,7 @@ package main
 import (
 	"errors"
 
-	//patched for AddHeaders
-	"github.com/horpto/termtables"
+	"github.com/apcera/termtables"
 	"github.com/horpto/toi/lib"
 )
 
